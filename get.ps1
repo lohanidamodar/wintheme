@@ -45,4 +45,5 @@ $params = @()
 if ($Accent) { $params += '-Accent', $Accent }
 if ($Admin)  { $params += '-Admin' }
 Invoke-Script 'install.ps1' $params
-Write-Host "Installed to $dir"
+if ($LASTEXITCODE -eq 0) { Write-Host "Installed to $dir" }
+else { Write-Host "Install did not complete - see the message above." -ForegroundColor Red }
