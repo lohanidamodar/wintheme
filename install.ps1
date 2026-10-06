@@ -63,21 +63,37 @@ ConvertTo-Json -InputObject $backup -Depth 5 | Set-Content $backupFile -Encoding
 
 # 2. Wallpapers
 New-Item -ItemType Directory -Force $wallDir | Out-Null
-$list = Get-Content "$PSScriptRoot\wallpapers.json" -Raw | ConvertFrom-Json
-foreach ($p in $list.PSObject.Properties) {
-    $dest = Join-Path $wallDir ([IO.Path]::GetFileName($p.Value))
+$list = @(Get-Content "$PSScriptRoot\wallpapers.json" -Raw | ConvertFrom-Json)
+$manifest = "$wallDir\.managed"   # files this script put there, so it never deletes your own
+
+# Remove wallpapers that were dropped from the list (older versions named them wallhaven-*)
+$managed = @(if (Test-Path $manifest) { Get-Content $manifest } else { Get-ChildItem $wallDir -Filter 'wallhaven-*' -Name })
+foreach ($old in $managed | Where-Object { $_ -and $_ -notin $list.name }) {
+    Remove-Item (Join-Path $wallDir $old) -ErrorAction SilentlyContinue
+}
+
+$ProgressPreference = 'SilentlyContinue'
+$i = 0
+foreach ($w in $list) {
+    $i++
+    $dest = Join-Path $wallDir $w.name
     if (Test-Path $dest) { continue }
     try {
-        Write-Host "Downloading $($p.Name)..."
-        $ProgressPreference = 'SilentlyContinue'
-        Invoke-WebRequest -Uri $p.Value -OutFile "$dest.part" -UseBasicParsing
-        Move-Item "$dest.part" $dest -Force
+        if ($w.url -match '^https?://') {
+            Write-Host "Downloading wallpaper $i/$($list.Count): $($w.name)"
+            Invoke-WebRequest -Uri $w.url -OutFile "$dest.part" -UseBasicParsing `
+                -UserAgent 'MinimalDark-wintheme/1.0 (+https://github.com/lohanidamodar/wintheme)'   # Wikimedia rejects generic agents
+            Move-Item "$dest.part" $dest -Force
+        } else {
+            Copy-Item (Join-Path $PSScriptRoot $w.url) $dest
+        }
     } catch {
         Remove-Item "$dest.part" -ErrorAction SilentlyContinue
-        Write-Warning "Could not download $($p.Name): $($_.Exception.Message)"
-        $skipped += "wallpaper $($p.Name) (download failed)"
+        Write-Warning "Could not get $($w.name): $($_.Exception.Message)"
+        $skipped += "wallpaper $($w.name) (download failed)"
     }
 }
+$list.name | Set-Content $manifest
 $images = Get-ChildItem $wallDir -File | Where-Object Extension -in '.jpg', '.png'
 if (-not $images) { throw "No wallpapers available in $wallDir - aborting before any change." }
 

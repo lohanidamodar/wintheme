@@ -1,0 +1,182 @@
+<!doctype html>
+<!-- Calm minimal wallpaper generator. Render one design at 3840x2160 with headless Edge:
+     msedge --headless --screenshot=out.png --window-size=3840,2160 --virtual-time-budget=8000 "file:///.../wallpapers.html#dusk"
+     Output is dedicated to the public domain (CC0). -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;background:#000;overflow:hidden}canvas{display:block;width:100vw;height:100vh}</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+const W = 3840, H = 2160;   // always render at 4K; CSS scales it to the window
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+const g = cv.getContext('2d');
+const S = Math.min(W, H) / 2160;   // scale so designs work at any size
+
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+
+function vgrad(stops) {
+  const gr = g.createLinearGradient(0, 0, 0, H);
+  stops.forEach(([p, c]) => gr.addColorStop(p, c));
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}
+function glow(x, y, r, color, alpha) {
+  const gr = g.createRadialGradient(x, y, 0, x, y, r);
+  gr.addColorStop(0, color.replace('A', alpha));
+  gr.addColorStop(1, color.replace('A', 0));
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+}
+function ridge(baseY, amp, freq, phase, color, rough = 0) {
+  g.beginPath(); g.moveTo(0, H);
+  for (let x = 0; x <= W; x += 4) {
+    const t = x / W;
+    let y = baseY + Math.sin(t * freq * Math.PI * 2 + phase) * amp
+                  + Math.sin(t * freq * 2.7 * Math.PI * 2 + phase * 1.9) * amp * 0.35;
+    if (rough) y += Math.sin(t * 90 + phase) * rough + Math.sin(t * 37 + phase * 3) * rough * 1.6;
+    g.lineTo(x, y);
+  }
+  g.lineTo(W, H); g.closePath(); g.fillStyle = color; g.fill();
+}
+function grain(amount) {
+  // Fine noise hides gradient banding on large screens.
+  const img = g.getImageData(0, 0, W, H), d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const n = (rnd() - 0.5) * amount;
+    d[i] += n; d[i + 1] += n; d[i + 2] += n;
+  }
+  g.putImageData(img, 0, 0);
+}
+
+const designs = {
+  // Warm glow rising from a dark horizon
+  dusk() {
+    vgrad([[0, '#0d0d10'], [0.55, '#141317'], [0.78, '#2a1d22'], [1, '#3a252b']]);
+    glow(W * 0.5, H * 1.05, H * 0.75, 'rgba(194,124,136,A)', 0.35);
+    glow(W * 0.5, H * 1.1, H * 0.35, 'rgba(232,180,160,A)', 0.25);
+  },
+  // A small pale moon in a wide empty sky
+  moon() {
+    vgrad([[0, '#0b0c10'], [1, '#16161c']]);
+    const x = W * 0.72, y = H * 0.3;
+    glow(x, y, 520 * S, 'rgba(210,200,200,A)', 0.07);
+    glow(x, y, 160 * S, 'rgba(230,220,215,A)', 0.12);
+    g.beginPath(); g.arc(x, y, 46 * S, 0, Math.PI * 2); g.fillStyle = '#d9d2cc'; g.fill();
+  },
+  // Soft dunes in layered warm greys
+  dunes() {
+    vgrad([[0, '#121116'], [1, '#1d1a1f']]);
+    glow(W * 0.3, H * 0.35, H * 0.6, 'rgba(194,124,136,A)', 0.10);
+    const layers = [['#221d22', 0.52, 70], ['#29222a', 0.62, 60], ['#30282e', 0.72, 50], ['#3a2f34', 0.83, 40], ['#45363b', 0.93, 30]];
+    layers.forEach(([c, y, a], i) => ridge(H * y, a * S, 0.6 + i * 0.25, i * 1.7, c));
+  },
+  // Misty mountain ridges fading into fog
+  ridges() {
+    vgrad([[0, '#0e1014'], [0.6, '#1a1c22'], [1, '#22232a']]);
+    glow(W * 0.62, H * 0.42, H * 0.6, 'rgba(220,180,180,A)', 0.16);
+    const layers = ['#2c2e37', '#24262e', '#1c1d24', '#15161b', '#0e0f12'];
+    layers.forEach((c, i) => {
+      ridge(H * (0.5 + i * 0.1), (120 - i * 15) * S, 1.1 + i * 0.4, i * 2.3, c, (6 - i) * S);
+      g.fillStyle = 'rgba(26,27,33,0.18)'; g.fillRect(0, 0, W, H);   // haze between layers
+    });
+  },
+  // Large blurred colour fields, like light through frosted glass
+  orbs() {
+    g.fillStyle = '#0e0d11'; g.fillRect(0, 0, W, H);
+    glow(W * 0.22, H * 0.3, H * 0.9, 'rgba(120,70,95,A)', 0.45);
+    glow(W * 0.8, H * 0.75, H * 0.95, 'rgba(60,62,110,A)', 0.4);
+    glow(W * 0.6, H * 0.15, H * 0.55, 'rgba(194,124,136,A)', 0.22);
+  },
+  // A single thin arc of light at the bottom edge
+  arc() {
+    vgrad([[0, '#0b0b0e'], [1, '#121116']]);
+    const cx = W / 2, cy = H * 1.9, r = H * 1.25;
+    glow(cx, H * 0.95, H * 0.6, 'rgba(194,124,136,A)', 0.18);
+    g.save(); g.shadowColor = 'rgba(232,170,180,0.9)'; g.shadowBlur = 60 * S;
+    g.beginPath(); g.arc(cx, cy, r, Math.PI * 1.15, Math.PI * 1.85);
+    g.strokeStyle = 'rgba(240,200,205,0.85)'; g.lineWidth = 3 * S; g.stroke(); g.restore();
+    g.beginPath(); g.arc(cx, cy, r, 0, Math.PI * 2); g.fillStyle = '#09090b'; g.fill();
+  },
+  // Sparse flowing lines, barely there
+  lines() {
+    vgrad([[0, '#0d0d10'], [1, '#141318']]);
+    g.lineWidth = 2.2 * S;
+    for (let i = 0; i < 26; i++) {
+      const y0 = H * (0.35 + i * 0.022), a = (40 + i * 3) * S, ph = i * 0.18;
+      g.beginPath();
+      for (let x = 0; x <= W; x += 6) {
+        const t = x / W;
+        const y = y0 + Math.sin(t * Math.PI * 2 * 0.8 + ph) * a + Math.sin(t * Math.PI * 2 * 1.9 + ph * 2) * a * 0.3;
+        x ? g.lineTo(x, y) : g.moveTo(x, y);
+      }
+      const k = 1 - Math.abs(i - 13) / 13;
+      g.strokeStyle = `rgba(214,150,160,${0.12 + k * 0.5})`; g.stroke();
+    }
+  },
+  // Still water: a horizon line and its faint reflection
+  horizon() {
+    vgrad([[0, '#0f1014'], [0.5, '#1c1b21'], [0.5, '#141418'], [1, '#0b0b0e']]);
+    glow(W * 0.5, H * 0.5, H * 0.7, 'rgba(214,160,160,A)', 0.22);
+    glow(W * 0.5, H * 0.5, H * 0.18, 'rgba(240,200,190,A)', 0.18);
+    g.fillStyle = 'rgba(240,210,200,0.22)'; g.fillRect(0, H * 0.5 - 1 * S, W, 2 * S);
+    for (let i = 0; i < 40; i++) {
+      const y = H * (0.52 + rnd() * 0.3), w = (200 + rnd() * 900) * S;
+      g.fillStyle = `rgba(230,180,175,${0.04 + rnd() * 0.08})`;
+      g.fillRect(W * 0.5 - w / 2 + (rnd() - 0.5) * 300 * S, y, w, 2 * S);
+    }
+  },
+  // Sparse circuit traces drifting across a dark board
+  circuit() {
+    vgrad([[0, '#0c0d10'], [1, '#121318']]);
+    glow(W * 0.7, H * 0.6, H * 0.8, 'rgba(194,124,136,A)', 0.08);
+    const step = 48 * S;
+    g.lineCap = 'round'; g.lineJoin = 'round';
+    for (let i = 0; i < 70; i++) {
+      let x = Math.round(rnd() * W / step) * step, y = Math.round(rnd() * H / step) * step;
+      const len = 6 + Math.floor(rnd() * 22), a = 0.06 + rnd() * 0.22;
+      g.beginPath(); g.moveTo(x, y);
+      let dir = rnd() < 0.5 ? 0 : 1;   // 0 = straight right, 1 = diagonal
+      for (let k = 0; k < len; k++) {
+        if (rnd() < 0.18) dir = 1 - dir;
+        x += step; y += dir ? (rnd() < 0.5 ? step : -step) : 0;
+        g.lineTo(x, y);
+      }
+      g.strokeStyle = `rgba(214,160,168,${a})`; g.lineWidth = 2.4 * S; g.stroke();
+      g.beginPath(); g.arc(x, y, 7 * S, 0, Math.PI * 2);
+      g.strokeStyle = `rgba(230,180,186,${a + 0.1})`; g.lineWidth = 2 * S; g.stroke();
+    }
+  },
+  // A single chip, its traces fanning out into the dark
+  chip() {
+    vgrad([[0, '#0c0c0f'], [1, '#131217']]);
+    const cx = W * 0.5, cy = H * 0.5, s = 300 * S;
+    glow(cx, cy, H * 0.55, 'rgba(194,124,136,A)', 0.16);
+    g.lineCap = 'round';
+    const pins = 14, gap = (s * 2) / (pins + 1);
+    for (const side of [0, 1, 2, 3]) {
+      for (let i = 1; i <= pins; i++) {
+        const o = -s + i * gap, len = (500 + rnd() * 900) * S, bend = (rnd() - 0.5) * 500 * S;
+        const pts = side === 0 ? [[cx + o, cy - s], [cx + o, cy - s - 120 * S], [cx + o + bend, cy - s - 120 * S - Math.abs(bend)], [cx + o + bend, cy - s - len]]
+                  : side === 1 ? [[cx + s, cy + o], [cx + s + 120 * S, cy + o], [cx + s + 120 * S + Math.abs(bend), cy + o + bend], [cx + s + len, cy + o + bend]]
+                  : side === 2 ? [[cx + o, cy + s], [cx + o, cy + s + 120 * S], [cx + o + bend, cy + s + 120 * S + Math.abs(bend)], [cx + o + bend, cy + s + len]]
+                  :              [[cx - s, cy + o], [cx - s - 120 * S, cy + o], [cx - s - 120 * S - Math.abs(bend), cy + o + bend], [cx - s - len, cy + o + bend]];
+        g.beginPath(); pts.forEach(([x, y], j) => j ? g.lineTo(x, y) : g.moveTo(x, y));
+        g.strokeStyle = `rgba(214,160,168,${0.10 + rnd() * 0.18})`; g.lineWidth = 2.2 * S; g.stroke();
+        const [ex, ey] = pts[3]; g.beginPath(); g.arc(ex, ey, 6 * S, 0, Math.PI * 2);
+        g.fillStyle = 'rgba(230,180,186,0.25)'; g.fill();
+      }
+    }
+    g.fillStyle = '#18171c'; g.fillRect(cx - s, cy - s, s * 2, s * 2);
+    g.strokeStyle = 'rgba(230,190,195,0.35)'; g.lineWidth = 2 * S; g.strokeRect(cx - s, cy - s, s * 2, s * 2);
+    g.strokeStyle = 'rgba(230,190,195,0.15)'; g.strokeRect(cx - s * 0.55, cy - s * 0.55, s * 1.1, s * 1.1);
+  },
+};
+const name = location.hash.slice(1) || 'dusk';
+(designs[name] || designs.dusk)();
+grain(5);
+document.title = 'done';
+</script>
+</body>
+</html>

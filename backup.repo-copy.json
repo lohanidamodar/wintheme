@@ -1,0 +1,302 @@
+﻿{
+    "Created":  "2026-10-06T06:41:50",
+    "PreviousTheme":  "C:\\Users\\dlohani\\AppData\\Local\\Microsoft\\Windows\\Themes\\Custom.theme",
+    "Wallpaper":  "c:\\windows\\web\\wallpaper\\themec\\img28.jpg",
+    "Values":  [
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                       "Name":  "AppsUseLightTheme",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                       "Name":  "SystemUsesLightTheme",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                       "Name":  "EnableTransparency",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
+                       "Name":  "ColorPrevalence",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\DWM",
+                       "Name":  "ColorPrevalence",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\DWM",
+                       "Name":  "AccentColor",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  -2852864
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\DWM",
+                       "Name":  "ColorizationColor",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  -1006602028
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\DWM",
+                       "Name":  "ColorizationAfterglow",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  -1006602028
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent",
+                       "Name":  "AccentColorMenu",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  -2852864
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent",
+                       "Name":  "StartColorMenu",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  -4167936
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Accent",
+                       "Name":  "AccentPalette",
+                       "Exists":  true,
+                       "Kind":  "Binary",
+                       "Value":  "mev/AEzC/wAAkfgAAHjUAABnwAAAPpIAABpoAPdjDAA="
+                   },
+                   {
+                       "Path":  "HKCU:\\Control Panel\\Desktop",
+                       "Name":  "AutoColorization",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "TaskbarAl",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "ShowTaskViewButton",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "TaskbarDa",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "ShowCopilotButton",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Search",
+                       "Name":  "SearchboxTaskbarMode",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Policies\\Microsoft\\Windows\\WindowsCopilot",
+                       "Name":  "TurnOffWindowsCopilot",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "Start_TrackDocs",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "Start_TrackProgs",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "Start_IrisRecommendations",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "Start_AccountNotifications",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Start",
+                       "Name":  "ShowRecentList",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Start",
+                       "Name":  "ShowFrequentList",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "HideFileExt",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "LaunchTo",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced",
+                       "Name":  "UseCompactMode",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+                       "Name":  "ShowRecent",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer",
+                       "Name":  "ShowFrequent",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Classes\\CLSID\\{e88865ea-0e1c-4e20-9aa6-edcd0212c87c}",
+                       "Name":  "System.IsPinnedToNameSpaceTree",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "RotatingLockScreenOverlayEnabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SubscribedContent-338387Enabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SubscribedContent-338389Enabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SubscribedContent-338393Enabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SubscribedContent-353694Enabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SubscribedContent-353696Enabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SoftLandingEnabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SilentInstalledAppsEnabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  0
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "SystemPaneSuggestionsEnabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\UserProfileEngagement",
+                       "Name":  "ScoobeSystemSettingEnabled",
+                       "Exists":  false,
+                       "Kind":  null,
+                       "Value":  null
+                   },
+                   {
+                       "Path":  "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\ContentDeliveryManager",
+                       "Name":  "RotatingLockScreenEnabled",
+                       "Exists":  true,
+                       "Kind":  "DWord",
+                       "Value":  1
+                   }
+               ],
+    "LockScreenImage":  "C:\\WINDOWS\\Web\\Screen\\img100.jpg",
+    "Terminal":  [
+                     {
+                         "Path":  "C:\\Users\\dlohani\\AppData\\Local\\Packages\\Microsoft.WindowsTerminal_8wekyb3d8bbwe\\LocalState\\settings.json",
+                         "DefaultScheme":  null,
+                         "Theme":  null
+                     }
+                 ]
+}
