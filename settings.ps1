@@ -325,8 +325,7 @@ function Uninstall-Terminal($backup) {
             if ($b.Theme) { $j.theme = $b.Theme } else { $j.PSObject.Properties.Remove('theme') }
         }
         if ($j.PSObject.Properties.Name -contains 'themes') {
-            $rest = @(@($j.themes) | Where-Object { $_ -and $_.name -ne $TerminalSchemeName })
-            if ($rest) { $j.themes = $rest } else { $j.PSObject.Properties.Remove('themes') }
+            $j.themes = @(@($j.themes) | Where-Object { $_ -and $_.name -ne $TerminalSchemeName })
         }
         Write-TerminalSettings $b.Path $j
     }
