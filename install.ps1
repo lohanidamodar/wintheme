@@ -63,7 +63,7 @@ ConvertTo-Json -InputObject $backup -Depth 5 | Set-Content $backupFile -Encoding
 
 # 2. Wallpapers
 New-Item -ItemType Directory -Force $wallDir | Out-Null
-$list = @(Get-Content "$PSScriptRoot\wallpapers.json" -Raw | ConvertFrom-Json)
+$list = @(Get-Content "$PSScriptRoot\wallpapers.json" -Raw | ConvertFrom-Json | ForEach-Object { $_ })   # 5.1 emits a JSON array as one item
 $manifest = "$wallDir\.managed"   # files this script put there, so it never deletes your own
 
 # Remove wallpapers that were dropped from the list (older versions named them wallhaven-*)
