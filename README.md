@@ -19,59 +19,78 @@ built-in Windows settings, with no third-party customisation tools, and
   Gallery and Home recent/frequent items hidden.
 - **Ads and tips:** lock-screen fun facts, Settings suggestions, "finish setting up"
   prompts and suggested apps are turned off.
+- **Windows Terminal:** a matching "Minimal Dark" colour scheme (charcoal background,
+  accent-coloured cursor and selection) and a flat dark tab bar.
 - Your sounds, cursors, animations and screensaver are left alone.
 
 ## Install
 
-```powershell
-git clone https://github.com/lohanidamodar/wintheme.git
-cd wintheme
-powershell -ExecutionPolicy Bypass -File .\install.ps1
-```
-
-You'll get a menu to pick the accent colour. To skip the menu, pass the colour directly:
+Open **PowerShell** (Start → type `powershell` → Enter), paste this and press Enter:
 
 ```powershell
-.\install.ps1 -Accent rose        # rose | terracotta | amber | sand
-.\install.ps1 -Accent "#7FA3C2"   # or any hex colour
+irm https://raw.githubusercontent.com/lohanidamodar/wintheme/master/get.ps1 | iex
 ```
 
-Run it again whenever you want to change the accent. Your original settings
-stay backed up from the first run.
+The installer:
 
-### Admin extras (optional)
+1. Shows a menu to pick the accent colour.
+2. Downloads everything to `%LOCALAPPDATA%\MinimalDark`.
+3. Backs up your current settings.
+4. Applies the theme.
+
+The Settings app opens and closes on its own while the theme applies. You don't
+need git, admin rights or any changes to your execution policy.
+
+### Options
+
+To skip the menu or add the admin extras, use this form and add the options at the end:
 
 ```powershell
-.\install.ps1 -Admin
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/lohanidamodar/wintheme/master/get.ps1))) -Accent amber -Admin
 ```
 
-This shows one UAC prompt and turns on a few settings that Windows only lets an
-administrator change:
+| Option | What it does |
+|---|---|
+| `-Accent <name>` | `rose`, `terracotta`, `amber`, `sand`, or any hex colour such as `"#7FA3C2"` |
+| `-Admin` | One UAC prompt. Turns Copilot off by policy and removes web/Bing results from Start search |
 
-- Copilot turned off by policy
-- No web or Bing results in Start search
+To change the accent later, or to update to the latest version, run the same
+command again. Your original settings stay backed up from the first run.
 
-Windows' anti-tamper protection blocks the Widgets policy even for
-administrators, so Widgets is only hidden from the taskbar.
+Windows' anti-tamper protection blocks the Widgets policy even for administrators,
+so Widgets is only hidden from the taskbar.
 
 ## Uninstall
 
 ```powershell
-.\uninstall.ps1                    # restore everything
-.\uninstall.ps1 -RemoveWallpapers  # also delete the downloaded images
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/lohanidamodar/wintheme/master/get.ps1))) -Uninstall
 ```
 
-The uninstall restores:
+Add `-RemoveWallpapers` to also delete the downloaded images. Uninstall restores:
 
-- every registry value, from `backup.json`
+- every registry value, from the backup
 - your previous theme and lock screen image
-- the admin extras, if you applied them
-- removes the lock screen scheduled task
+- your previous Windows Terminal colour scheme and theme
+- the admin extras, if you applied them (one UAC prompt)
 
+It also removes the lock screen scheduled task.
+
+### From a clone instead
+
+```powershell
+git clone https://github.com/lohanidamodar/wintheme.git
+cd wintheme
+powershell -ExecutionPolicy Bypass -File .\install.ps1 -Accent rose
+powershell -ExecutionPolicy Bypass -File .\uninstall.ps1
+```
+
+Only one copy can be installed at a time. If you try to install a second copy,
+it stops and tells you where the first one is.
 ## Files
 
 | File | Purpose |
 |---|---|
+| `get.ps1` | One-line installer: downloads the latest version and runs install or uninstall |
 | `install.ps1` | Applies everything; safe to re-run |
 | `uninstall.ps1` | Restores from the backups |
 | `settings.ps1` | The single list of settings and accent colours, shared by all scripts |
@@ -85,7 +104,7 @@ These are created locally and git-ignored: `wallpapers/`, `backup.json`,
 ## Customising
 
 - **Wallpapers:** add or remove entries in `wallpapers.json`, or drop your own
-  `.jpg`/`.png` files into `wallpapers/`, then re-run `install.ps1`.
+  `.jpg`/`.png` files into `wallpapers/`, then re-run the install command. The installed copy lives in `%LOCALAPPDATA%\MinimalDark`.
 - **Accent colours:** edit the `$Accents` table at the top of `settings.ps1`.
 - **Slideshow interval:** change `Interval` (milliseconds) in the `Slideshow`
   section of `install.ps1`.

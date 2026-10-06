@@ -24,7 +24,12 @@ if ($backup.LockScreenImage -and (Test-Path $backup.LockScreenImage)) {
     try { Set-LockScreenImage $backup.LockScreenImage } catch { $failed += 'lock screen image' }
 }
 
-# 3. Previous theme first, so the restored values below win
+# 3. Windows Terminal
+if ($backup.PSObject.Properties.Name -contains 'Terminal') {
+    try { $failed += @(Uninstall-Terminal $backup.Terminal) } catch { $failed += "Windows Terminal ($($_.Exception.Message))" }
+}
+
+# 4. Previous theme first, so the restored values below win
 if (Test-Path $backupTheme) {
     Write-Host "Restoring previous theme..."
     if (-not (Invoke-Theme $backupTheme)) { Write-Warning "Windows did not confirm the previous theme; open backup-theme.theme manually." }
@@ -32,7 +37,7 @@ if (Test-Path $backupTheme) {
     Set-ItemProperty 'HKCU:\Control Panel\Desktop' WallPaper $backup.Wallpaper
 }
 
-# 4. Registry values
+# 5. Registry values
 $failed += @(Restore-Values $backup.Values)
 
 Restart-Explorer

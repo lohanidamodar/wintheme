@@ -15,6 +15,13 @@ $themeFile   = "$PSScriptRoot\MinimalDark.theme"
 $themesKey   = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes'
 $skipped     = @()
 
+# Refuse to run from a second copy: its backup would record the themed state as "original"
+$task = Get-ScheduledTask -TaskName $LockTaskName -ErrorAction SilentlyContinue
+if ($task -and $task.Actions[0].Arguments -notlike "*`"$PSScriptRoot\lockscreen.ps1`"*") {
+    $other = [regex]::Match($task.Actions[0].Arguments, '-File "(.+)\\lockscreen\.ps1"').Groups[1].Value
+    throw "Minimal Dark is already installed from '$other'. Run uninstall.ps1 there first, or re-run install.ps1 from that folder."
+}
+
 # 0. Accent
 if (-not $Accent) {
     $esc = [char]27
@@ -47,6 +54,9 @@ if (-not $backup) {
 }
 if (-not ($backup.PSObject.Properties.Name -contains 'LockScreenImage')) {
     $backup | Add-Member LockScreenImage (Get-LockScreenImage)
+}
+if (-not ($backup.PSObject.Properties.Name -contains 'Terminal')) {
+    $backup | Add-Member Terminal @(Get-TerminalBackup)
 }
 $backup.Values = Get-BackupEntries $Settings $backup.Values
 ConvertTo-Json -InputObject $backup -Depth 5 | Set-Content $backupFile -Encoding UTF8
@@ -123,17 +133,20 @@ try {
     $skipped += "lock screen ($($_.Exception.Message))"
 }
 
-# 6. Admin-only extras
+# 6. Windows Terminal colour scheme and tab bar
+try { $skipped += @(Install-Terminal $hex) } catch { $skipped += "Windows Terminal ($($_.Exception.Message))" }
+
+# 7. Admin-only extras
 if ($Admin) {
     Write-Host "Requesting administrator rights for the extras..."
     & "$PSScriptRoot\admin.ps1"
     if ($LASTEXITCODE -ne 0) { $skipped += "admin extras (cancelled or failed)" }
 }
 
-# 7. Restart Explorer
+# 8. Restart Explorer
 Restart-Explorer
 
-# 8. Summary
+# 9. Summary
 $ok = @($Settings | Where-Object { Test-SettingValue $_ (Get-RegValue $_.Path $_.Name) }).Count
 Write-Host ""
 Write-Host "Minimal Dark applied: accent $hex, $ok/$($Settings.Count) settings, $($images.Count) wallpapers on desktop and lock screen."

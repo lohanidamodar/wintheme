@@ -227,3 +227,107 @@ function Assert-InteractiveUser {
 function Test-Elevated {
     ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+
+# ---------- Windows Terminal ----------
+$TerminalSchemeName = 'Minimal Dark'
+$TerminalFragmentDir = "$env:LOCALAPPDATA\Microsoft\Windows Terminal\Fragments\MinimalDark"
+
+function Get-TerminalSettingsPaths {
+    @(
+        "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+        "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json"
+        "$env:LOCALAPPDATA\Microsoft\Windows Terminal\settings.json"
+    ) | Where-Object { Test-Path $_ }
+}
+
+function Get-TerminalScheme($hex) {
+    [ordered]@{
+        name = $TerminalSchemeName
+        background = '#161618'; foreground = '#D6D2CE'
+        cursorColor = $hex; selectionBackground = $hex
+        black  = '#1E1E21'; red  = '#C9626B'; green  = '#8FAE7E'; yellow  = '#D4A55A'
+        blue   = '#7C93B8'; purple = '#A887B5'; cyan  = '#79A8A6'; white  = '#CFCAC4'
+        brightBlack = '#5A5A60'; brightRed = '#E07A82'; brightGreen = '#A6C493'; brightYellow = '#E6BC77'
+        brightBlue  = '#96ACCF'; brightPurple = '#C1A1CC'; brightCyan = '#95C2BF'; brightWhite = '#F2EEEA'
+    }
+}
+
+function Format-Json([string]$json) {
+    # Windows PowerShell 5.1 indents ConvertTo-Json output oddly; re-indent with 4 spaces.
+    $indent = 0
+    $lines = foreach ($raw in ($json -split "\r?\n")) {
+        $line = $raw.Trim()
+        if ($line -match '^[\}\]]') { $indent-- }
+        ('    ' * [math]::Max($indent, 0)) + ($line -replace '^("(?:[^"\\]|\\.)*"):\s+', '$1: ')
+        if ($line -match '[\{\[]$') { $indent++ }
+    }
+    ($lines -join "`r`n") -replace '\[\s*\]', '[]' -replace '\{\s*\}', '{}' -replace '\x5Cu0027', "'" -replace '\x5Cu003c', '<' -replace '\x5Cu003e', '>' -replace '\x5Cu0026', '&'
+}
+
+function Read-TerminalSettings($path) {
+    try { Get-Content $path -Raw -Encoding UTF8 | ConvertFrom-Json } catch { $null }   # null when it has comments
+}
+
+function Write-TerminalSettings($path, $json) {
+    Format-Json (ConvertTo-Json -InputObject $json -Depth 50) | Set-Content $path -Encoding UTF8
+}
+
+function Get-TerminalBackup {
+    # Records what we are about to change in each settings.json.
+    foreach ($path in Get-TerminalSettingsPaths) {
+        $j = Read-TerminalSettings $path
+        if (-not $j) { continue }
+        $defaults = $j.profiles.defaults
+        [pscustomobject][ordered]@{
+            Path          = $path
+            DefaultScheme = if ($defaults -and $defaults.PSObject.Properties.Name -contains 'colorScheme') { $defaults.colorScheme } else { $null }
+            Theme         = if ($j.PSObject.Properties.Name -contains 'theme') { $j.theme } else { $null }
+        }
+    }
+}
+
+function Install-Terminal($hex) {
+    # Returns a list of problems; empty when everything worked.
+    if (-not (Get-TerminalSettingsPaths)) { return }
+    New-Item -ItemType Directory -Force $TerminalFragmentDir | Out-Null
+    $fragment = [ordered]@{ schemes = @(Get-TerminalScheme $hex) }
+    Format-Json (ConvertTo-Json -InputObject $fragment -Depth 5) | Set-Content "$TerminalFragmentDir\minimal-dark.json" -Encoding UTF8
+
+    $theme = [ordered]@{
+        name   = $TerminalSchemeName
+        window = [ordered]@{ applicationTheme = 'dark'; useMica = $false }
+        tabRow = [ordered]@{ background = '#161618FF'; unfocusedBackground = '#161618FF' }
+        tab    = [ordered]@{ background = 'terminalBackground'; unfocusedBackground = '#161618FF'; showCloseButton = 'hover' }
+    }
+    foreach ($path in Get-TerminalSettingsPaths) {
+        $j = Read-TerminalSettings $path
+        if (-not $j) { "Terminal settings has comments, set the '$TerminalSchemeName' scheme yourself: $path"; continue }
+        if (-not $j.profiles.defaults) { $j.profiles | Add-Member defaults ([pscustomobject]@{}) -Force }
+        $j.profiles.defaults | Add-Member colorScheme $TerminalSchemeName -Force
+        $themes = @(@($j.themes) | Where-Object { $_ -and $_.name -ne $TerminalSchemeName }) + [pscustomobject]$theme
+        $j | Add-Member themes $themes -Force
+        $j | Add-Member theme $TerminalSchemeName -Force
+        Write-TerminalSettings $path $j
+    }
+}
+
+function Uninstall-Terminal($backup) {
+    Remove-Item $TerminalFragmentDir -Recurse -Force -ErrorAction SilentlyContinue
+    foreach ($b in @($backup)) {
+        if (-not $b -or -not (Test-Path $b.Path)) { continue }
+        $j = Read-TerminalSettings $b.Path
+        if (-not $j) { "Terminal settings has comments, reset the colour scheme yourself: $($b.Path)"; continue }
+        $d = $j.profiles.defaults
+        if ($d -and $d.colorScheme -eq $TerminalSchemeName) {
+            if ($b.DefaultScheme) { $d.colorScheme = $b.DefaultScheme } else { $d.PSObject.Properties.Remove('colorScheme') }
+        }
+        if ($j.theme -eq $TerminalSchemeName) {
+            if ($b.Theme) { $j.theme = $b.Theme } else { $j.PSObject.Properties.Remove('theme') }
+        }
+        if ($j.PSObject.Properties.Name -contains 'themes') {
+            $rest = @(@($j.themes) | Where-Object { $_ -and $_.name -ne $TerminalSchemeName })
+            if ($rest) { $j.themes = $rest } else { $j.PSObject.Properties.Remove('themes') }
+        }
+        Write-TerminalSettings $b.Path $j
+    }
+}
