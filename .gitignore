@@ -1,6 +1,6 @@
-﻿docs/
-wallpapers/
-backup.json
+docs/
+/wallpapers/
+backup*.json
 MinimalDark.theme
 backup-theme.theme
 backup-admin.json
