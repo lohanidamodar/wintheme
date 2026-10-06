@@ -13,7 +13,7 @@ built-in Windows settings, with no third-party customisation tools, and
   accent colour used only for highlights. The taskbar, Start and title bars are not tinted.
 - **Wallpaper:** 13 dark abstract wallpapers (4K or larger), shuffled every 30 minutes.
 - **Lock screen:** the same wallpapers, with a new one each time you sign in or unlock.
-- **Taskbar:** left-aligned, with Task View, Widgets, Search and Copilot hidden.
+- **Taskbar:** centred icons, with Task View, Widgets, Search and Copilot hidden.
 - **Start:** no Recommended section, recent apps, most-used apps or tips.
 - **File Explorer:** opens to This PC, compact view, file extensions shown,
   Gallery and Home recent/frequent items hidden.

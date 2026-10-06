@@ -53,7 +53,7 @@ function Get-Settings($hex) {
         @{ Path = 'HKCU:\Control Panel\Desktop'; Name = 'AutoColorization'; Type = 'DWord'; Value = 0 }
 
         # Taskbar
-        @{ Path = $adv; Name = 'TaskbarAl';          Type = 'DWord'; Value = 0 }
+        @{ Path = $adv; Name = 'TaskbarAl';          Type = 'DWord'; Value = 1 }   # centred
         @{ Path = $adv; Name = 'ShowTaskViewButton'; Type = 'DWord'; Value = 0 }
         @{ Path = $adv; Name = 'TaskbarDa';          Type = 'DWord'; Value = 0 }
         @{ Path = $adv; Name = 'ShowCopilotButton';  Type = 'DWord'; Value = 0 }
