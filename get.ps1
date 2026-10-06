@@ -30,7 +30,10 @@ New-Item -ItemType Directory -Force $tmp | Out-Null
 try {
     Write-Host "Downloading Minimal Dark..."
     $ProgressPreference = 'SilentlyContinue'
-    Invoke-WebRequest 'https://github.com/lohanidamodar/wintheme/archive/refs/heads/master.zip' -OutFile "$tmp\wintheme.zip" -UseBasicParsing
+    # Download the exact latest commit; the branch archive can be served from a stale cache
+    $ref = 'refs/heads/master'
+    try { $ref = (Invoke-RestMethod 'https://api.github.com/repos/lohanidamodar/wintheme/commits/master' -UseBasicParsing).sha } catch {}
+    Invoke-WebRequest "https://github.com/lohanidamodar/wintheme/archive/$ref.zip" -OutFile "$tmp\wintheme.zip" -UseBasicParsing
     Expand-Archive "$tmp\wintheme.zip" $tmp -Force
     $src = Get-ChildItem $tmp -Directory | Select-Object -First 1
     New-Item -ItemType Directory -Force $dir | Out-Null
